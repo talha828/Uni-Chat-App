@@ -7,7 +7,7 @@ import 'package:uni_chat_app/widgets/chat_progress_indicator.dart';
 import 'package:uni_chat_app/widgets/chat_text_field.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key key}) : super(key: key);
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();

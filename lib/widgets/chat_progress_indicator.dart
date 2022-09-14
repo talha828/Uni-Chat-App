@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ChatProgressIndicator extends StatelessWidget {
   const ChatProgressIndicator({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

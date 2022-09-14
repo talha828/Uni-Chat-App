@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class LoginTextField extends StatelessWidget{
   const LoginTextField({
-    Key key,
-    @required this.width,
-    @required this.email,
-    @required this.name,
+    Key? key,
+    required this.width,
+    required this.email,
+    required this.name,
   }) : super(key: key);
 
   final double width;

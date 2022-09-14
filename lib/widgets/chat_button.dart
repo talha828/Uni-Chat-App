@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 
 class ChatButton extends StatelessWidget {
    ChatButton({
-    Key key,
-    @required this.width,
-    @required this.name,
-    @required this.onTap
+    Key? key,
+    required this.width,
+    required this.name,
+    required this.onTap
   }) : super(key: key);
 
   final double width;
   final String name;
-  Function  onTap;
+   void Function()?  onTap;
 
   @override
   Widget build(BuildContext context) {

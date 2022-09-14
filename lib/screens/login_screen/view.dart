@@ -15,7 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   bool isLoading = false;
-  bool value = true;
+  bool? value = true;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     LoginTextField(
                         width: width, email: password, name: "Password"),
                     ForgetPasswordAndRememberMe(),
-                    ChatButton(width: width, name: "Login"),
+                    ChatButton(width: width, name: "Login",onTap: (){},),
                     CreateAccount(
                       onTap:()=>Get.to(SignUpScreen()),
                     ),
@@ -69,9 +69,9 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               Checkbox(
                   value: value,
-                  onChanged: (bool) {
+                  onChanged: (val) {
                     setState(() {
-                      value = bool;
+                      value = val;
                     });
                   }),
               Text(

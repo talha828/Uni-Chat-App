@@ -5,12 +5,12 @@ import 'package:uni_chat_app/constant/constant.dart';
 
 class ImageContainer extends StatelessWidget {
   const ImageContainer({
-    Key key,
-    @required this.width,
-    @required this.mainImage,
-    @required this.profileImage,
-    @required this.name,
-    @required this.disc,
+    Key? key,
+    required this.width,
+    required this.mainImage,
+    required this.profileImage,
+    required this.name,
+    required this.disc,
   }) : super(key: key);
 
   final double width;

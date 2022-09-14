@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CreateAccount extends StatelessWidget {
    CreateAccount({
-    Key key,
+    Key? key,
     this.onTap
   }) : super(key: key);
    var onTap;

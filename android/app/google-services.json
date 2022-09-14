@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "931106272278",
+    "project_id": "chat-app-bbda8",
+    "storage_bucket": "chat-app-bbda8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:931106272278:android:38464324cdf432b5813137",
+        "android_client_info": {
+          "package_name": "com.example.uni_chat_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "931106272278-l5g98teat8one4339g8f7alio6prg3vv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCU3CJENHXyutNWW5I8Og4J6AgSPTxU5NQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "931106272278-l5g98teat8one4339g8f7alio6prg3vv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

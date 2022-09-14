@@ -4,12 +4,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class SliderImageContainer extends StatelessWidget {
   const SliderImageContainer({
-    Key key,
-    @required this.width,
-    @required this.mainImage,
-    @required this.profileImage,
-    @required this.name,
-    @required this.disc,
+    Key? key,
+    required this.width,
+    required this.mainImage,
+    required this.profileImage,
+    required this.name,
+    required this.disc,
   }) : super(key: key);
 
   final double width;

@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uni_chat_app/constant/constant.dart';
@@ -7,7 +8,7 @@ import 'package:uni_chat_app/widgets/chat_image_container.dart';
 import 'package:uni_chat_app/widgets/chat_slider_image_container.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({Key key}) : super(key: key);
+  const MainScreen({Key? key}) : super(key: key);
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -16,27 +17,30 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   List<Widget>list=[DiscoverGroupScreen(),LoginScreen(),LoginScreen(),LoginScreen(),LoginScreen(),];
   int index=0;
+
   @override
   Widget build(BuildContext context) {
     var width =MediaQuery.of(context).size.width;
     var height =MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: index,
-          onTap: (value){
-            setState(() {
-              index=value;
-            });
-          },
+        bottomNavigationBar: FloatingNavbar(
+          selectedBackgroundColor: themeColor2,
+          selectedItemColor: Colors.white,
+          backgroundColor:Colors.white,
           unselectedItemColor: Colors.black,
-          selectedItemColor: themeColor1,
+          onTap: (int val) {
+           setState(() {
+             index=val;
+           });
+          },
+          currentIndex: index,
           items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home),title: Text("")),
-            BottomNavigationBarItem(icon: Icon(Icons.search),title: Text("gfh")),
-            BottomNavigationBarItem(icon: Icon(Icons.message),title: Text("fgh")),
-            BottomNavigationBarItem(icon: Icon(Icons.notifications_none_outlined),title: Text("fgh"),),
-            BottomNavigationBarItem(icon: Icon(Icons.person),title: Text("fgh"),),
+            FloatingNavbarItem(icon: Icons.home, title: 'Home'),
+            FloatingNavbarItem(icon: Icons.search, title: 'Explore'),
+            FloatingNavbarItem(icon: Icons.message, title: 'Chats'),
+            FloatingNavbarItem(icon: Icons.notifications_none_outlined, title: 'Settings'),
+            FloatingNavbarItem(icon: Icons.person, title: 'Settings'),
           ],
         ),
         body: list.elementAt(index)
@@ -47,7 +51,7 @@ class _MainScreenState extends State<MainScreen> {
 
 
 class DiscoverGroupScreen extends StatefulWidget {
-  const DiscoverGroupScreen({Key key}) : super(key: key);
+  const DiscoverGroupScreen({Key? key}) : super(key: key);
 
   @override
   State<DiscoverGroupScreen> createState() => _DiscoverGroupScreenState();
