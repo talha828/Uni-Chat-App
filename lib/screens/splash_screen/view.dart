@@ -1,9 +1,13 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uni_chat_app/firebase/database.dart';
 import 'package:uni_chat_app/screens/login_screen/view.dart';
+import 'package:uni_chat_app/screens/main_screen/view.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -12,9 +16,25 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  getStart() async {
+    final prefs = await SharedPreferences.getInstance();
+    var email = prefs.getString("email");
+    var password = prefs.getString("password");
+    if (email != null && password != null) {
+      await Database.login(email.toString(), password.toString())
+          .then((value) => Get.to(() => const MainScreen()))
+          .catchError(
+            (e) {
+          Fluttertoast.showToast(msg: "something went wrong");
+        },
+      );
+    } else {
+      Timer(const Duration(seconds: 2), () => Get.to(LoginScreen()));
+    }
+  }
   @override
   void initState() {
-    Timer(Duration(seconds: 2),()=>Get.to(() =>LoginScreen()));
+    getStart();
     super.initState();
   }
   @override

@@ -3,7 +3,11 @@ import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.da
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uni_chat_app/constant/constant.dart';
+import 'package:uni_chat_app/screens/chat_screen/view.dart';
+import 'package:uni_chat_app/screens/explore_screen/view.dart';
 import 'package:uni_chat_app/screens/login_screen/view.dart';
+import 'package:uni_chat_app/screens/notification_screen/view.dart';
+import 'package:uni_chat_app/screens/setting_screen/view.dart';
 import 'package:uni_chat_app/widgets/chat_image_container.dart';
 import 'package:uni_chat_app/widgets/chat_slider_image_container.dart';
 
@@ -15,7 +19,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  List<Widget>list=[DiscoverGroupScreen(),LoginScreen(),LoginScreen(),LoginScreen(),LoginScreen(),];
+  List<Widget>list=[DiscoverGroupScreen(),ExploreScreen(),ChatScreen(),NotificationScreen(),SettingScreen(),];
   int index=0;
 
   @override
@@ -25,7 +29,8 @@ class _MainScreenState extends State<MainScreen> {
     return SafeArea(
       child: Scaffold(
         bottomNavigationBar: FloatingNavbar(
-          selectedBackgroundColor: themeColor2,
+          elevation: 1.0,
+          selectedBackgroundColor: themeColor1,
           selectedItemColor: Colors.white,
           backgroundColor:Colors.white,
           unselectedItemColor: Colors.black,
@@ -39,7 +44,7 @@ class _MainScreenState extends State<MainScreen> {
             FloatingNavbarItem(icon: Icons.home, title: 'Home'),
             FloatingNavbarItem(icon: Icons.search, title: 'Explore'),
             FloatingNavbarItem(icon: Icons.message, title: 'Chats'),
-            FloatingNavbarItem(icon: Icons.notifications_none_outlined, title: 'Settings'),
+            FloatingNavbarItem(icon: Icons.notifications_none_outlined, title: 'notification'),
             FloatingNavbarItem(icon: Icons.person, title: 'Settings'),
           ],
         ),
