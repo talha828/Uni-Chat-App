@@ -1,9 +1,14 @@
+
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:uni_chat_app/constant/constant.dart';
 import 'package:uni_chat_app/widgets/chat_progress_indicator.dart';
 import 'package:uni_chat_app/widgets/chat_tile.dart';
+
+import 'package:flutter/material.dart';
+import 'package:uni_chat_app/widgets/chat_progress_indicator.dart';
+
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -38,8 +43,9 @@ class _ChatScreenState extends State<ChatScreen> {
                child: Column(
                  children: [
                    Container(
+
                      margin: EdgeInsets.symmetric(vertical: width * 0.04,horizontal: width * 0.04),
-                     child:TextField(
+                      child:TextField(
                         controller: search,
                         decoration: InputDecoration(
                           filled: true,
@@ -51,6 +57,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       ),
                     ),
+
                    Expanded(
                      child: ListView.separated(
                          shrinkWrap: true,
@@ -62,6 +69,7 @@ class _ChatScreenState extends State<ChatScreen> {
                            child: Divider());
                      }, itemCount: 15),
                    ),
+
                  ],
                ),
              ),
@@ -72,4 +80,3 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 }
-

@@ -27,6 +27,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           actions: [
             Icon(Icons.arrow_back_ios_new,color: Colors.white,),
           ],
+
         ),
         body: Stack(
           alignment: Alignment.center,
