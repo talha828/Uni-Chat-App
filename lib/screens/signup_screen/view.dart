@@ -20,6 +20,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController name = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
+  TextEditingController specialization = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
@@ -62,6 +63,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       LoginTextField(
                         width: width,
+                        controller: specialization,
+                        hintText: "Specialization (teacher, student, etc)",
+                        obscureText: false,
+                      ),
+                      LoginTextField(
+                        width: width,
                         controller: password,
                         hintText: "Password",
                         obscureText: true,
@@ -83,6 +90,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 name.text,
                                 email.text,
                                 password.text.toString(),
+                                specialization.text,
                               ).then(
                                 (value) {
                                   setLoading(false);

@@ -9,7 +9,7 @@ import 'package:uni_chat_app/model/user_model.dart';
 import 'package:uni_chat_app/screens/main_screen/view.dart';
 
 class Database{
-  static Future<bool>signUp(String name,String email,String password,)async{
+  static Future<bool>signUp(String name,String email,String password,String specialization)async{
     FirebaseAuth auth=FirebaseAuth.instance;
     CollectionReference database=FirebaseFirestore.instance.collection("users");
     //database=FirebaseDatabase.instance.ref().child("database").child("user_details");
@@ -17,6 +17,7 @@ class Database{
       await database.doc(auth.currentUser!.uid).set({
         "name":name,
         "email":email,
+        "specialization":specialization,
         "password":password,
         "uid":auth.currentUser!.uid,
       }).then((value) async{

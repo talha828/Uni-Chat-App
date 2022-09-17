@@ -2,7 +2,9 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:uni_chat_app/constant/constant.dart';
+import 'package:uni_chat_app/screens/chat_room/view.dart';
 import 'package:uni_chat_app/widgets/chat_progress_indicator.dart';
 import 'package:uni_chat_app/widgets/chat_tile.dart';
 
@@ -23,6 +25,8 @@ class _ChatScreenState extends State<ChatScreen> {
   String name="talha";
   String msg="kuch v";
   String  time="10:00 PM";
+  int selectedIndex=0;
+  List<String>list=["Private Chat","Academic Chat","Activity Chat"];
   @override
   Widget build(BuildContext context) {
     var width =MediaQuery.of(context).size.width;
@@ -47,22 +51,43 @@ class _ChatScreenState extends State<ChatScreen> {
                      margin: EdgeInsets.symmetric(vertical: width * 0.04,horizontal: width * 0.04),
                       child:TextField(
                         controller: search,
+                        textAlignVertical: TextAlignVertical.center,
                         decoration: InputDecoration(
+                          suffixIcon: Icon(Icons.search),
                           filled: true,
                           fillColor: Colors.grey.shade300,
                           contentPadding:
                           EdgeInsets.symmetric(horizontal: width * 0.04),
-                          border: InputBorder.none,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(width * 0.01)
+                          ),
                           hintText: "Search",
                         ),
                       ),
                     ),
+                    Padding(
+                      padding: EdgeInsets.only(bottom:width * 0.09,top: width * 0.02),
+                      child:Container(
+                        height: width * 0.1,
+                        child: ListView.separated(
+                          separatorBuilder: (context,index){
+                            return SizedBox(width: width * 0.02,);
+                          },
+                            shrinkWrap: true,
+                            itemCount: 3,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context,index){
+                          return ChatTypeButton(width: width,selectedIndex: selectedIndex,index: index,title:list[index],onTap: ()=>setState(()=>selectedIndex=index,),);
 
+                        }),
+                      )
+                    ),
                    Expanded(
                      child: ListView.separated(
                          shrinkWrap: true,
                          itemBuilder: (context,index){
-                       return ChatTiles(name: name, width: width, msg: msg, time: time,onTap: (){},);
+                       return ChatTiles(name: name, width: width, msg: msg, time: time,onTap: ()=>Get.to(()=>ChatRoomScreen()),);
                      }, separatorBuilder: (context,index){
                        return Container(
                            margin: EdgeInsets.symmetric(horizontal: width * 0.04),
@@ -76,6 +101,39 @@ class _ChatScreenState extends State<ChatScreen> {
             isLoading?const Positioned.fill(child: ChatProgressIndicator()):Container()
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ChatTypeButton extends StatelessWidget {
+   ChatTypeButton({
+    Key? key,
+    required this.width,
+    required this.title,
+    required this.index,
+    required this.selectedIndex,
+    required this.onTap
+  }) : super(key: key);
+
+  final double width;
+  final String title;
+   int selectedIndex;
+   int index;
+   Function()? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap:onTap ,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: width * 0.025,horizontal: width * 0.025),
+        decoration: BoxDecoration(
+        color:selectedIndex==index? themeColor1:Colors.white,
+          border: Border.all(color: themeColor1),
+          borderRadius: BorderRadius.circular(width * 0.01)
+        ),
+        child:Text(title,style: TextStyle(color:selectedIndex==index?Colors.white:themeColor1),) ,
       ),
     );
   }
