@@ -4,10 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uni_chat_app/constant/constant.dart';
-import 'package:uni_chat_app/screens/chat_room/view.dart';
-import 'package:uni_chat_app/screens/login_screen/view.dart';
-import 'package:uni_chat_app/screens/main_screen/view.dart';
-import 'package:uni_chat_app/screens/signup_screen/view.dart';
 import 'package:uni_chat_app/screens/splash_screen/view.dart';
 
 void main() async{
@@ -40,7 +36,7 @@ class MyApp extends StatelessWidget {
           Theme.of(context).textTheme
         )
       ),
-      home: SignUpScreen(),
+      home: SplashScreen(),
     );
   }
 }

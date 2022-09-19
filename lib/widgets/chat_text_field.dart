@@ -2,19 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class LoginTextField extends StatelessWidget{
-  const LoginTextField({
+   LoginTextField({
     Key? key,
     required this.width,
     required this.controller,
     required this.hintText,
     required this.obscureText,
+             this.onChange
   }) : super(key: key);
 
   final double width;
   final TextEditingController controller;
   final String hintText;
   final bool   obscureText;
-
+   Function(String)?  onChange;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,6 +33,7 @@ class LoginTextField extends StatelessWidget{
             height: width * 0.04,
           ),
           TextFormField(
+            onChanged:onChange,
             obscureText:obscureText ,
             validator: (value){
               if (value == null || value.isEmpty) {

@@ -4,7 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uni_chat_app/constant/constant.dart';
-import 'package:uni_chat_app/screens/chat_room/view.dart';
+import 'package:uni_chat_app/screens/chat_room_screen/view.dart';
 import 'package:uni_chat_app/widgets/chat_progress_indicator.dart';
 import 'package:uni_chat_app/widgets/chat_tile.dart';
 
@@ -87,7 +87,7 @@ class _ChatScreenState extends State<ChatScreen> {
                      child: ListView.separated(
                          shrinkWrap: true,
                          itemBuilder: (context,index){
-                       return ChatTiles(name: name, width: width, msg: msg, time: time,onTap: ()=>Get.to(()=>ChatRoomScreen()),);
+                       return ChatTiles(name: name, width: width, msg: msg, time: time,onTap: ()=>Get.to(ChatRoomScreen()),);
                      }, separatorBuilder: (context,index){
                        return Container(
                            margin: EdgeInsets.symmetric(horizontal: width * 0.04),

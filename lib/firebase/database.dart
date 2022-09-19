@@ -40,6 +40,7 @@ class Database{
           user.name.value=data['name'].toString();
           user.email.value=data['email'].toString();
           user.uid.value=data['uid'].toString();
+          user.specialization.value=data['specialization'].toString();
           user.password.value=data['password'].toString();
           final prefs = await SharedPreferences.getInstance();
           prefs.setString("email",data['email']);

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_chat_app/constant/constant.dart';
+import 'package:uni_chat_app/screens/login_screen/view.dart';
 import 'package:uni_chat_app/widgets/chat_progress_indicator.dart';
 
 
@@ -27,11 +30,18 @@ class _SettingScreenState extends State<SettingScreen> {
         ),
         body: Column(
           children: [
-
-               ListTile(
-                leading: Icon(Icons.person,color: themeColor1,),
-                  title: Text("Edit Profile"),
-              ),
+            ListTile(
+              leading: Icon(Icons.group,color: themeColor1,),
+              title: Text("Create Group"),
+            ),
+            ListTile(
+              leading: Icon(Icons.group_add,color: themeColor1,),
+              title: Text("Join Group"),
+            ),
+            ListTile(
+              leading: Icon(Icons.person,color: themeColor1,),
+              title: Text("Edit Profile"),
+            ),
             ListTile(
               leading: Icon(Icons.mood_bad_outlined,color: themeColor1,),
               title: Text("Complain Box"),
@@ -45,6 +55,12 @@ class _SettingScreenState extends State<SettingScreen> {
               title: Text("About Us"),
             ),
             ListTile(
+              onTap: ()async{
+                SharedPreferences prefs=await SharedPreferences.getInstance();
+                prefs.setString("email", "null");
+                prefs.setString("password", "null");
+                Get.to(LoginScreen());
+              },
               leading: Icon(Icons.logout,color: themeColor1,),
               title: Text("Logout"),
             ),
