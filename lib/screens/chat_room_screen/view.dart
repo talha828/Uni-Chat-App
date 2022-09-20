@@ -71,7 +71,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 ),
                 StreamBuilder(
                   stream: FirebaseFirestore.instance
-                      .collection("chat").doc(userDetails.uid.toString() + chatUserDetails.uid.toString()).collection(userDetails.uid.toString() + chatUserDetails.uid.toString()).orderBy("timeStamp")
+                      .collection("chat").doc(userDetails.uid.toString() + chatUserDetails.uid.toString()).collection(userDetails.uid.toString() + chatUserDetails.uid.toString()).orderBy("timestamp")
                       .snapshots(),
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -100,11 +100,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         .map((doc) => ChatMessage(
                         myName: doc['my_name'],
                         friendName: doc["friend_name"],
-                        msgOwner: doc['message_owner'],
+                        msgOwner: doc['msg_owner'],
                         uid: doc['uid'],
                         seen: doc['seen'].toString(),
                         message: doc['message'],
-                        timestamp: doc["timeStamp"].toString()))
+                        timestamp: doc["timestamp"].toString()))
                         .toList();
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                         if (_controller.hasClients) {
