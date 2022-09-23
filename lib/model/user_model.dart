@@ -6,6 +6,8 @@ class UserDetails extends GetxController {
   RxString uid = "".obs;
   RxString specialization = "".obs;
   RxString password = "".obs;
+  List chatUsers=[].obs;
+
 }
 
 class MyUser {

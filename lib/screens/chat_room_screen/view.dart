@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:uni_chat_app/constant/constant.dart';
 import 'package:uni_chat_app/model/chat_message_model.dart';
 import 'package:uni_chat_app/model/user_model.dart';
+import 'package:uni_chat_app/screens/chat_details_screen/view.dart';
 import 'package:uni_chat_app/widgets/chat_progress_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -55,6 +56,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             icon: Icon(Icons.arrow_back_ios_new),
           ),
           title: ListTile(
+            onTap: ()async{
+              Get.to(ChatDetailsScreen());
+            },
             leading: CircleAvatar(
               radius: width * 0.04,
               backgroundColor: themeColor1,
@@ -214,14 +218,16 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                               child: Row(
                                       mainAxisAlignment:MainAxisAlignment.spaceBetween,
                                                 children: [
-                                                  Text(
-                                                      msg[index].message.toString(),
-                                                      textAlign: TextAlign.start,
-                                                      maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                          color: Colors.white),
-                                                    ),
+                                                  Flexible(
+                                                    child: Text(
+                                                        msg[index].message.toString(),
+                                                        textAlign: TextAlign.start,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: TextStyle(
+                                                            color: Colors.white),
+                                                      ),
+                                                  ),
                                                   Container(
                                                     padding:EdgeInsets.all(width * 0.01),
                                                       decoration:BoxDecoration(
@@ -292,7 +298,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                 "friend_uid":
                                     chatUserDetails.uid.value.toString(),
                                 "is_image": true,
-                                "message": null,
+                                "message": "picture",
                                 "is_document": false,
                                 "document": null,
                                 "msg_owner": userDetails.name.value.toString(),
@@ -326,7 +332,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                 "friend_uid":
                                     chatUserDetails.uid.value.toString(),
                                 "is_image": true,
-                                "message": null,
+                                "message": "picture",
                                 "is_document": false,
                                 "document": null,
                                 "msg_owner": userDetails.name.value.toString(),

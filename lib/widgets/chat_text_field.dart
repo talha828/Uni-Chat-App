@@ -8,13 +8,15 @@ class LoginTextField extends StatelessWidget{
     required this.controller,
     required this.hintText,
     required this.obscureText,
-             this.onChange
+             this.onChange,
+             this.maxLine
   }) : super(key: key);
 
   final double width;
   final TextEditingController controller;
   final String hintText;
   final bool   obscureText;
+  final int? maxLine;
    Function(String)?  onChange;
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,7 @@ class LoginTextField extends StatelessWidget{
             height: width * 0.04,
           ),
           TextFormField(
+            maxLines: maxLine,
             onChanged:onChange,
             obscureText:obscureText ,
             validator: (value){

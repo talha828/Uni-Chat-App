@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:uni_chat_app/constant/constant.dart';
+import 'package:uni_chat_app/model/chat_message_model.dart';
+import 'package:uni_chat_app/model/user_model.dart';
+import 'package:intl/intl.dart';
 
 class ChatDetailsScreen extends StatefulWidget {
   const ChatDetailsScreen({Key? key}) : super(key: key);
@@ -10,6 +15,8 @@ class ChatDetailsScreen extends StatefulWidget {
 
 class _ChatDetailsScreenState extends State<ChatDetailsScreen>
     with SingleTickerProviderStateMixin {
+  final chatUserDetails = Get.find<ChatUserDetails>();
+  final userDetails = Get.find<UserDetails>();
   late TabController _tabController;
   List<String> list = [
     "assets/png_images/logic.png",
@@ -38,6 +45,10 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen>
     var height = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton( icon:Icon(Icons.arrow_back_ios),onPressed: ()=>Navigator.pop(context),),
+          elevation: 0,
+        ),
         body: Container(
           padding: EdgeInsets.symmetric(
               horizontal: width * 0.04, vertical: width * 0.04),
@@ -45,6 +56,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              SizedBox(height: width * 0.02,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -54,15 +66,11 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen>
                       border: Border.all(color: themeColor1),
                       borderRadius: BorderRadius.circular(width * 1),
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(width * 1),
-                      child: Image.asset(
-                        "assets/png_images/logic.png",
-                        width: width * 0.4,
-                        height: width * 0.4,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                    child: CircleAvatar(
+                      backgroundColor: themeColor1,
+                      radius: width * 0.15,
+                      child: Text(chatUserDetails.name.substring(0,1),style: TextStyle(fontSize: width * 0.2,color: Colors.white),),
+                    )
                   ),
                 ],
               ),
@@ -70,7 +78,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen>
                 height: width * 0.08,
               ),
               Text(
-                "Talha Iqbal",
+                chatUserDetails.name.value,
                 style: TextStyle(
                     fontWeight: FontWeight.bold, fontSize: width * 0.07),
                 textAlign: TextAlign.center,
@@ -79,7 +87,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen>
                 height: width * 0.04,
               ),
               Text(
-                "talhaiqbal246@gmail.com",
+                chatUserDetails.email.value,
                 style: TextStyle(
                     color: Colors.grey.shade600, fontSize: width * 0.045),
                 textAlign: TextAlign.center,
@@ -88,7 +96,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen>
                 height: width * 0.04,
               ),
               Text(
-                "Student",
+                chatUserDetails.specialization.value,
                 style: TextStyle(
                     color: Colors.grey.shade600, fontSize: width * 0.045),
                 textAlign: TextAlign.center,
@@ -115,36 +123,115 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen>
                 child: TabBarView(
                   children: [
                     Container(
-                      child: GridView.count(
-                          crossAxisSpacing: width * 0.01,
-                          mainAxisSpacing: width * 0.01,
-                          crossAxisCount: 3,
-                          children: list
-                              .map((e) => Container(
-                                    color: Colors.blue,
-                                    child: Image.asset(
-                                      e.toString(),
-                                      fit: BoxFit.cover,
-                                      width: width * 0.04,
-                                      height: width * 0.04,
-                                    ),
-                                  ))
-                              .toList()),
+                      child: StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                    .collection("chat")
+                    .doc(userDetails.uid.toString() +
+                    chatUserDetails.uid.toString())
+                    .collection(userDetails.uid.toString() +
+                    chatUserDetails.uid.toString()).where("is_image",isEqualTo: true)
+                    .orderBy("timestamp",descending: true)
+                    .snapshots(),
+                        builder: (context,AsyncSnapshot<QuerySnapshot> snapshot) {
+                          List<ChatMessage> msg = snapshot.data!.docs
+                              .map(
+                                (doc) => ChatMessage(
+                              myName: doc['my_name'],
+                              friendName: doc["friend_name"],
+                              msgOwner: doc['msg_owner'],
+                              myUid: doc['uid'],
+                              seen: doc['seen'],
+                              image: doc["image"],
+                              timestamp: doc["timestamp"].toString(),
+                              friendUid: doc['friend_uid'],
+                              isDocument: doc['is_document'],
+                              document: doc['document'],
+                              isImage: doc['is_image'],
+                              message: doc['message'],
+                            ),
+                          )
+                              .toList();
+                          if (snapshot.hasError) // TODO: show alert
+                            return Text('Something went wrong');
+
+                          if (snapshot.connectionState == ConnectionState.waiting)
+                            return Column(
+                              children: [Center(child: CircularProgressIndicator())],
+                            );
+                          if(snapshot.data!.docs.length <1){
+                            return Center(child: Text("No records are found"),);
+                          }
+                          return GridView.count(
+                              crossAxisSpacing: width * 0.01,
+                              mainAxisSpacing: width * 0.01,
+                              crossAxisCount: 3,
+                              children: msg
+                                  .map((e) => Container(
+                                        color: Colors.blue,
+                                        child: Image.memory(
+                                          e.image!.bytes,
+                                          fit: BoxFit.cover,
+                                          width: width * 0.04,
+                                          height: width * 0.04,
+                                        ),
+                                      ))
+                                  .toList());
+                        }
+                      ),
                     ),
                     Container(
-                      child: ListView.separated(
-                        separatorBuilder: (context,index){
-                          return Divider();
-                        },
-                        itemCount: 15,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            leading:Icon(Icons.file_present,color: Colors.black,size: width * 0.08,),
-                            title: Text("My Documents"),
-                            subtitle: Text("12kb      .      Sunday"),
-                            trailing: Text("10:00 PM"),
+                      child: StreamBuilder(
+                        stream:FirebaseFirestore.instance
+                            .collection("chat")
+                            .doc(userDetails.uid.toString() +
+                            chatUserDetails.uid.toString())
+                            .collection(userDetails.uid.toString() +
+                            chatUserDetails.uid.toString()).where("is_document",isEqualTo: true)
+                            .orderBy("timestamp",descending: true)
+                            .snapshots(),
+                        builder: (context,AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if(snapshot.data!.docs.length <1){
+                            return Center(child: Text("No records are found"),);
+                          }
+                          List<ChatMessage> msg = snapshot.data!.docs
+                              .map(
+                                (doc) => ChatMessage(
+                              myName: doc['my_name'],
+                              friendName: doc["friend_name"],
+                              msgOwner: doc['msg_owner'],
+                              myUid: doc['uid'],
+                              seen: doc['seen'],
+                              image: doc["image"],
+                              timestamp: doc["timestamp"].toString(),
+                              friendUid: doc['friend_uid'],
+                              isDocument: doc['is_document'],
+                              document: doc['document'],
+                              isImage: doc['is_image'],
+                              message: doc['message'],
+                            ),
+                          )
+                              .toList();
+                          return ListView.separated(
+                            separatorBuilder: (context,index){
+                              return Divider();
+                            },
+                            itemCount: msg.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                leading:Icon(Icons.file_present,color: Colors.black,size: width * 0.08,),
+                                title: Text(msg[index].message.toString(),maxLines: 2,overflow: TextOverflow.ellipsis,),
+                                //subtitle: Text("12kb      .      Sunday"),
+                                trailing: Text(
+                                  readTimestamp(
+                                      int.parse(msg[index].timestamp)),
+                                  textAlign: TextAlign.end,
+                                  style: TextStyle(
+                                      fontSize: width * 0.04),
+                                ),
+                              );
+                            },
                           );
-                        },
+                        }
                       ),
                     ),
                   ],
@@ -156,5 +243,27 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen>
         ),
       ),
     );
+  }
+  String readTimestamp(int timestamp) {
+    var now = new DateTime.now();
+    var format = new DateFormat('HH:mm a');
+    var date = new DateTime.fromMicrosecondsSinceEpoch(timestamp * 1000);
+    var diff = date.difference(now);
+    var time = '';
+
+    if (diff.inSeconds <= 0 ||
+        diff.inSeconds > 0 && diff.inMinutes == 0 ||
+        diff.inMinutes > 0 && diff.inHours == 0 ||
+        diff.inHours > 0 && diff.inDays == 0) {
+      time = format.format(date);
+    } else {
+      if (diff.inDays == 1) {
+        time = diff.inDays.toString() + 'DAY AGO';
+      } else {
+        time = diff.inDays.toString() + 'DAYS AGO';
+      }
+    }
+
+    return time;
   }
 }

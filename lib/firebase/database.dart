@@ -42,6 +42,10 @@ class Database{
           user.uid.value=data['uid'].toString();
           user.specialization.value=data['specialization'].toString();
           user.password.value=data['password'].toString();
+          for(var i in data['user_chat_link']){
+              user.chatUsers.add(i);
+          }
+
           final prefs = await SharedPreferences.getInstance();
           prefs.setString("email",data['email']);
           prefs.setString("password", data['password']);
