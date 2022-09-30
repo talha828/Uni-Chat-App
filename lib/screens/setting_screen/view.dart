@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_chat_app/constant/constant.dart';
+import 'package:uni_chat_app/screens/complainbox_screen/view.dart';
+import 'package:uni_chat_app/screens/create_group_screen/view.dart';
+import 'package:uni_chat_app/screens/edit_screen/view.dart';
+import 'package:uni_chat_app/screens/group_explore_screen/view.dart';
 import 'package:uni_chat_app/screens/login_screen/view.dart';
 import 'package:uni_chat_app/widgets/chat_progress_indicator.dart';
 
@@ -31,28 +35,27 @@ class _SettingScreenState extends State<SettingScreen> {
         body: Column(
           children: [
             ListTile(
+              onTap: ()async{
+                Get.to(CreateGroupScreen());
+              },
               leading: Icon(Icons.group,color: themeColor1,),
               title: Text("Create Group"),
             ),
             ListTile(
+              onTap: ()=>
+                Get.to(GroupExploreScreen()),
               leading: Icon(Icons.group_add,color: themeColor1,),
               title: Text("Join Group"),
             ),
             ListTile(
+              onTap: ()=>Get.to(EditScreen()),
               leading: Icon(Icons.person,color: themeColor1,),
               title: Text("Edit Profile"),
             ),
             ListTile(
+              onTap: ()=>Get.to(ComplainBoxScreen()),
               leading: Icon(Icons.mood_bad_outlined,color: themeColor1,),
               title: Text("Complain Box"),
-            ),
-            ListTile(
-              leading: Icon(Icons.bug_report_outlined,color: themeColor1,),
-              title: Text("Bug Report"),
-            ),
-            ListTile(
-              leading: Icon(Icons.info_outline,color: themeColor1,),
-              title: Text("About Us"),
             ),
             ListTile(
               onTap: ()async{

@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:uni_chat_app/constant/constant.dart';
 import 'package:uni_chat_app/model/chat_message_model.dart';
 import 'package:uni_chat_app/model/user_model.dart';
-import 'package:intl/intl.dart';
 
 class ChatDetailsScreen extends StatefulWidget {
   const ChatDetailsScreen({Key? key}) : super(key: key);

@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uni_chat_app/constant/constant.dart';
-import 'package:uni_chat_app/screens/create_group_screen/view.dart';
 import 'package:uni_chat_app/screens/splash_screen/view.dart';
 
 void main() async{
@@ -37,7 +36,7 @@ class MyApp extends StatelessWidget {
           Theme.of(context).textTheme
         )
       ),
-      home: CreateGroupScreen(),
+      home: SplashScreen(),
     );
   }
 }

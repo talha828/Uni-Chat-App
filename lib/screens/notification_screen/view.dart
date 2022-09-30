@@ -1,7 +1,5 @@
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_chat_app/constant/constant.dart';
-import 'package:uni_chat_app/screens/chat_screen/view.dart';
 import 'package:uni_chat_app/widgets/chat_notification_tile.dart';
 import 'package:uni_chat_app/widgets/chat_progress_indicator.dart';
 

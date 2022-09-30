@@ -1,15 +1,20 @@
 import 'dart:io';
-import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uni_chat_app/constant/constant.dart';
+import 'package:uni_chat_app/model/Group_chat_model.dart';
+import 'package:uni_chat_app/model/chat_message_model.dart';
+import 'package:uni_chat_app/screens/group_chat_room/view.dart';
 import 'package:uni_chat_app/widgets/chat_button.dart';
 
 import '../../widgets/chat_text_field.dart';
-
+enum GroupType{academic ,activity}
 class CreateGroupScreen extends StatefulWidget {
   const CreateGroupScreen({Key? key}) : super(key: key);
 
@@ -20,7 +25,10 @@ class CreateGroupScreen extends StatefulWidget {
 class _CreateGroupScreenState extends State<CreateGroupScreen> {
   TextEditingController group = TextEditingController();
   TextEditingController description = TextEditingController();
+  FilePickerResult? result;
   final _formKey = GlobalKey<FormState>();
+  final groupDetails = Get.put(GroupChatModel());
+  GroupType value=GroupType.activity;
   final ImagePicker _picker = ImagePicker();
   File? image;
   @override
@@ -43,7 +51,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
           key: _formKey,
           child: SingleChildScrollView(
             child: Container(
-              height: height - 90,
+              height: height,
               padding: EdgeInsets.symmetric(horizontal: width * 0.07),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -51,7 +59,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                 children: [
                   InkWell(
                     onTap: () async {
-                      FilePickerResult? result =
+                       result =
                           await FilePicker.platform.pickFiles(
                         type: FileType.custom,
                         allowedExtensions: ['png', 'jpg', "jpeg"],
@@ -88,6 +96,51 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                     width: width,
                     hintText: "Group Name",
                   ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: width * 0.04,
+                  ),
+                  Text(
+                    "Group Type",
+                    style: TextStyle(
+                        fontSize: width * 0.05,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  SizedBox(
+                    height: width * 0.04,
+                  ),
+                  ListTile(
+                  title: const Text('Academic'),
+          leading: Radio(
+            value: GroupType.academic,
+            groupValue: value,
+            onChanged: (GroupType? check) {
+                  setState(() {
+                    value=check!;
+                    print(check);
+
+                  });
+            },
+          ),
+        ),
+                  ListTile(
+                    title: const Text('Activity'),
+                    leading: Radio(
+                      value: GroupType.activity,
+                      groupValue: value,
+                      onChanged: (GroupType? check) {
+                        setState(() {
+                          value=check!;
+                          print(check);
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
                   Container(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,7 +183,14 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                       onTap: () async {
                         if (_formKey.currentState!.validate()) {
                           if(image != null){
-
+                            FirebaseAuth _auth=FirebaseAuth.instance;
+                            groupDetails.groupInfo.clear();
+                              groupDetails.groupInfo.add(
+                                GroupMessage(groupImage:  Blob(await image!.readAsBytes()), desc: description.text, type: value==GroupType.activity?"Activity" :"Academic", myName: "", friendName: group.text.trim(), msgOwner: "", image: Blob(await image!.readAsBytes()), myUid: "", timestamp: "", seen: false, friendUid: "", isDocument: false, isImage: false)
+                                //GroupChatsModel(name: group.text, desc: description.text, link:_auth.currentUser!.uid+group.text.replaceAll(" ", "_"),groupType: value==GroupType.activity?"Activity" :"Academic" , image: Blob(await image!.readAsBytes()))
+                              );
+                              
+                              Get.to(GroupChatRoomScreen());
                           }else{
                             Fluttertoast.showToast(msg:"Image is required");
                           }

@@ -1,4 +1,5 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uni_chat_app/constant/constant.dart';
@@ -14,7 +15,7 @@ class ImageContainer extends StatelessWidget {
   }) : super(key: key);
 
   final double width;
-  final String mainImage;
+  final Blob mainImage;
   final String profileImage;
   final String name;
   final String disc;
@@ -38,7 +39,7 @@ class ImageContainer extends StatelessWidget {
                     ]
                 )
             ),
-            child: SvgPicture.asset(mainImage),
+            child: Image.memory(mainImage.bytes),
           ),
           Container(
             decoration: BoxDecoration(

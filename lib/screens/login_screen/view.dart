@@ -49,12 +49,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       LoginTextField(
                         width: width,
+                        maxLine: 1,
                         controller: email,
                         hintText: "Email",
                         obscureText: false,
                       ),
                       LoginTextField(
                         width: width,
+                        maxLine: 1,
                         controller: password,
                         hintText: "Password",
                         obscureText: true,

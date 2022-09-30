@@ -10,23 +10,26 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:uni_chat_app/constant/constant.dart';
+import 'package:uni_chat_app/model/Group_chat_model.dart';
 import 'package:uni_chat_app/model/chat_message_model.dart';
 import 'package:uni_chat_app/model/user_model.dart';
 import 'package:uni_chat_app/screens/chat_details_screen/view.dart';
+import 'package:uni_chat_app/screens/main_screen/view.dart';
 import 'package:uni_chat_app/widgets/chat_progress_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ChatRoomScreen extends StatefulWidget {
-  const ChatRoomScreen({Key? key}) : super(key: key);
+class GroupChatRoomScreen extends StatefulWidget {
+  const GroupChatRoomScreen({Key? key}) : super(key: key);
 
   @override
-  State<ChatRoomScreen> createState() => _ChatRoomScreenState();
+  State<GroupChatRoomScreen> createState() => _GroupChatRoomScreenState();
 }
 
-class _ChatRoomScreenState extends State<ChatRoomScreen> {
+class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
   TextEditingController message = TextEditingController();
-  final chatUserDetails = Get.find<ChatUserDetails>();
+  // final chatUserDetails = Get.find<ChatUserDetails>();
   final userDetails = Get.find<UserDetails>();
+  final chatUserDetails = Get.find<GroupChatModel>();
   final ImagePicker _picker = ImagePicker();
   final ScrollController _controller = ScrollController();
   void _scrollDown() {
@@ -38,7 +41,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   void initState() {
     storageRef = FirebaseStorage.instance.ref();
-// TODO: implement initState
     super.initState();
   }
 
@@ -50,26 +52,21 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Get.to(MainScreen()),
             icon: Icon(Icons.arrow_back_ios_new),
           ),
           title: ListTile(
             onTap: ()async{
               Get.to(ChatDetailsScreen());
             },
-            leading: CircleAvatar(
-              radius: width * 0.04,
-              backgroundColor: themeColor1,
-              child: Text(
-                chatUserDetails.name.toString().substring(0, 1).toUpperCase(),
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: width * 0.04),
-              ),
+            leading: Container(
+              width: width * 0.13,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(width),
+                  child: Image.memory(chatUserDetails.groupInfo[0].groupImage!.bytes)),
             ),
             title: Text(
-              chatUserDetails.name.toString(),
+              chatUserDetails.groupInfo[0].friendName.toString(),
               style: TextStyle(
                   fontSize: width * 0.05, fontWeight: FontWeight.bold),
             ),
@@ -86,11 +83,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 ),
                 StreamBuilder(
                   stream: FirebaseFirestore.instance
-                      .collection("chat")
-                      .doc(userDetails.uid.toString() +
-                          chatUserDetails.uid.toString())
-                      .collection(userDetails.uid.toString() +
-                          chatUserDetails.uid.toString())
+                      .collection("groups")
+                      .doc(chatUserDetails.groupInfo[0].type=="Activity"?"Activity":"Academic")
+                      .collection(chatUserDetails.groupInfo[0].friendName)
+                  //friend name pendingd
                       .orderBy("timestamp")
                       .snapshots(),
                   builder: (BuildContext context,
@@ -100,7 +96,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
                     if (snapshot.connectionState == ConnectionState.waiting)
                       return Column(
-                        children: [Center(child: ChatProgressIndicator())],
+                        children: [Center(child: CircularProgressIndicator())],
                       );
 
                     var len = snapshot.data!.docs.length;
@@ -116,23 +112,26 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         ],
                       );
 
-                    List<ChatMessage> msg = snapshot.data!.docs
+                    List<GroupMessage> msg = snapshot.data!.docs
                         .map(
-                          (doc) => ChatMessage(
-                            myName: doc['my_name'],
-                            friendName: doc["friend_name"],
-                            msgOwner: doc['msg_owner'],
-                            myUid: doc['uid'],
-                            seen: doc['seen'],
-                            image: doc["image"],
-                            timestamp: doc["timestamp"].toString(),
-                            friendUid: doc['friend_uid'],
-                            isDocument: doc['is_document'],
-                            document: doc['document'],
-                            isImage: doc['is_image'],
-                            message: doc['message'],
-                          ),
-                        )
+                          (doc) => GroupMessage(
+                        groupImage: doc["group_image"],
+                        desc:doc["description"] ,
+                        type: doc["group_type"],
+                        myName: doc['my_name'],
+                        friendName: doc["friend_name"],
+                        msgOwner: doc['msg_owner'],
+                        myUid: doc['uid'],
+                        seen: doc['seen'],
+                        image: doc["image"],
+                        timestamp: doc["timestamp"].toString(),
+                        friendUid: doc['friend_uid'],
+                        isDocument: doc['is_document'],
+                        document: doc['document'],
+                        isImage: doc['is_image'],
+                        message: doc['message'],
+                      ),
+                    )
                         .toList();
                     WidgetsBinding.instance.addPostFrameCallback((_) async {
                       await Future.delayed(Duration(seconds: 1), () {
@@ -153,7 +152,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                             return ListTile(
                               trailing: CircleAvatar(
                                 backgroundColor: msg[index].msgOwner ==
-                                        userDetails.name.value
+                                    userDetails.name.value
                                     ? themeColor1
                                     : Colors.white,
                                 child: Text(
@@ -170,11 +169,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                               ),
                               leading: CircleAvatar(
                                 backgroundColor: msg[index].msgOwner !=
-                                        userDetails.name.value
+                                    userDetails.name.value
                                     ? themeColor1
                                     : Colors.white,
                                 child: Text(
-                                  chatUserDetails.name
+                                  chatUserDetails.groupInfo[0].friendName
                                       .toString()
                                       .substring(0, 1)
                                       .toUpperCase(),
@@ -191,17 +190,17 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                 decoration: BoxDecoration(
                                     color: themeColor1.withOpacity(0.9),
                                     borderRadius:
-                                        BorderRadius.circular(width * 0.02)),
+                                    BorderRadius.circular(width * 0.02)),
                                 child: Column(
                                   crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
+                                  CrossAxisAlignment.stretch,
                                   children: [
                                     msg[index].isImage
                                         ? Image.memory(
-                                            msg[index].image!.bytes,
-                                          )
+                                      msg[index].image!.bytes,
+                                    )
                                         : msg[index].isDocument
-                                            ? InkWell(
+                                        ? InkWell(
                                       onTap:()async{
                                         await canLaunch(msg[index].document!) ? await launch(msg[index].document!) : Fluttertoast.showToast(
                                             msg: "Somethings went wrong",
@@ -213,35 +212,35 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                             fontSize: 16.0
                                         );
                                       },
-                                              child: Row(
-                                      mainAxisAlignment:MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Flexible(
-                                                    child: Text(
-                                                        msg[index].message.toString(),
-                                                        textAlign: TextAlign.start,
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        style: TextStyle(
-                                                            color: Colors.white),
-                                                      ),
-                                                  ),
-                                                  Container(
-                                                    padding:EdgeInsets.all(width * 0.01),
-                                                      decoration:BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(width),
-                                                        border: Border.all(color: Colors.white)
-                                                      ),
-                                                      child: Icon(Icons.download,color: Colors.white,size: width * 0.04,))
-                                                ],
+                                      child: Row(
+                                        mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              msg[index].message.toString(),
+                                              textAlign: TextAlign.start,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                          Container(
+                                              padding:EdgeInsets.all(width * 0.01),
+                                              decoration:BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(width),
+                                                  border: Border.all(color: Colors.white)
                                               ),
-                                            )
-                                            : Text(
-                                                msg[index].message.toString(),
-                                                textAlign: TextAlign.start,
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
+                                              child: Icon(Icons.download,color: Colors.white,size: width * 0.04,))
+                                        ],
+                                      ),
+                                    )
+                                        : Text(
+                                      msg[index].message.toString(),
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                          color: Colors.white),
+                                    ),
                                     SizedBox(
                                       height: width * 0.02,
                                     ),
@@ -279,24 +278,46 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           onPressed: () async {
                             final XFile? photo = await _picker
                                 .pickImage(
-                                    source: ImageSource.camera,
-                                    imageQuality: 10)
+                                source: ImageSource.camera,
+                                imageQuality: 10)
                                 .then((value) async {
+                              chatUserDetails.groupInfo[0].type=="Activity"?
+                              await FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(userDetails.uid.toString())
+                                  .update({
+                                "is_activity":true,
+                                "activity_group_link":
+                                FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                              }): await FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(userDetails.uid.toString())
+                                  .update({
+                                "is_academic":true,
+                                "Academic_group_link":
+                                FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                              });
+                               chatUserDetails.groupInfo[0].type=="Activity"?await FirebaseFirestore.instance.collection("group_list").doc("activity").update({
+                                "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                              }):await FirebaseFirestore.instance.collection("group_list").doc("Academic").update({
+                                 "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                               });
                               var chatPath = FirebaseFirestore.instance
-                                  .collection("chat")
-                                  .doc(userDetails.uid.toString() +
-                                      chatUserDetails.uid.toString())
-                                  .collection(userDetails.uid.toString() +
-                                      chatUserDetails.uid.toString())
+                                  .collection("groups")
+                                  .doc(chatUserDetails.groupInfo[0].type=="Activity"?"Activity":"Academic")
+                                  .collection(chatUserDetails.groupInfo[0].friendName)
                                   .doc();
                               chatPath.set({
                                 "my_name": userDetails.name.value.toString(),
                                 "friend_name":
-                                    chatUserDetails.name.value.toString(),
+                                chatUserDetails.groupInfo[0].friendName.toString(),
                                 "friend_uid":
-                                    chatUserDetails.uid.value.toString(),
+                                chatUserDetails.groupInfo[0].friendName.toString(),
+                                "group_type":chatUserDetails.groupInfo[0].type,
                                 "is_image": true,
+                                "description":chatUserDetails.groupInfo[0].desc,
                                 "message": "picture",
+                                "group_image":chatUserDetails.groupInfo[0].groupImage,
                                 "is_document": false,
                                 "document": null,
                                 "msg_owner": userDetails.name.value.toString(),
@@ -304,31 +325,54 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                 "uid": userDetails.uid.value.toString(),
                                 "seen": false,
                                 "timestamp":
-                                    DateTime.now().millisecondsSinceEpoch,
+                                DateTime.now().millisecondsSinceEpoch,
                               });
                             });
                           },
                           icon: Icon(Icons.camera_alt_outlined)),
                       IconButton(
                           onPressed: () async {
+                            chatUserDetails.groupInfo[0].type=="Activity"?
+                            await FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(userDetails.uid.toString())
+                                .update({
+                              "is_activity":true,
+                              "activity_group_link":
+                              (
+                                  chatUserDetails.groupInfo[0].friendName)
+                            }): await FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(userDetails.uid.toString())
+                                .update({
+                              "is_academic":true,
+                              "Academic_group_link":
+                              FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                            });
+                            chatUserDetails.groupInfo[0].type=="Activity"?await FirebaseFirestore.instance.collection("group_list").doc("activity").update({
+                              "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                            }):await FirebaseFirestore.instance.collection("group_list").doc("Academic").update({
+                              "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                            });
                             final XFile? photo = await _picker
                                 .pickImage(
-                                    source: ImageSource.gallery,
-                                    imageQuality: 10)
+                                source: ImageSource.gallery,
+                                imageQuality: 10)
                                 .then((value) async {
                               var chatPath = FirebaseFirestore.instance
-                                  .collection("chat")
-                                  .doc(userDetails.uid.toString() +
-                                      chatUserDetails.uid.toString())
-                                  .collection(userDetails.uid.toString() +
-                                      chatUserDetails.uid.toString())
+                                  .collection("groups")
+                                  .doc(chatUserDetails.groupInfo[0].type=="Activity"?"Activity":"Academic")
+                                  .collection(chatUserDetails.groupInfo[0].friendName)
                                   .doc();
-                              chatPath.set({
+                              await chatPath.set({
                                 "my_name": userDetails.name.value.toString(),
                                 "friend_name":
-                                    chatUserDetails.name.value.toString(),
+                                chatUserDetails.groupInfo[0].friendName.toString(),
+                                "group_type":chatUserDetails.groupInfo[0].type,
                                 "friend_uid":
-                                    chatUserDetails.uid.value.toString(),
+                                chatUserDetails.groupInfo[0].friendName.toString(),
+                                "description":chatUserDetails.groupInfo[0].desc,
+                                "group_image":chatUserDetails.groupInfo[0].groupImage,
                                 "is_image": true,
                                 "message": "picture",
                                 "is_document": false,
@@ -338,15 +382,37 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                 "uid": userDetails.uid.value.toString(),
                                 "seen": false,
                                 "timestamp":
-                                    DateTime.now().millisecondsSinceEpoch,
+                                DateTime.now().millisecondsSinceEpoch,
                               });
                             });
                           },
                           icon: Icon(Icons.image)),
                       IconButton(
                           onPressed: () async {
+                            chatUserDetails.groupInfo[0].type=="Activity"?
+                            await FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(userDetails.uid.toString())
+                                .update({
+                              "is_activity":true,
+                              "activity_group_link":
+                              (
+                                  chatUserDetails.groupInfo[0].friendName)
+                            }): await FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(userDetails.uid.toString())
+                                .update({
+                              "is_academic":true,
+                              "Academic_group_link":
+                              FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                            });
+                            chatUserDetails.groupInfo[0].type=="Activity"?await FirebaseFirestore.instance.collection("group_list").doc("activity").update({
+                              "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                            }):await FirebaseFirestore.instance.collection("group_list").doc("Academic").update({
+                              "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                            });
                             FilePickerResult? result =
-                                await FilePicker.platform.pickFiles(
+                            await FilePicker.platform.pickFiles(
                               type: FileType.custom,
                               allowedExtensions: ['pdf', 'doc'],
                             );
@@ -355,34 +421,35 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                               FirebaseStorage _storage =
                                   FirebaseStorage.instance;
                               Reference reference =
-                                  _storage.ref().child("${result.names[0]}/");
+                              _storage.ref().child("${result.names[0]}/");
                               print(file.path);
                               var uploadTask = await reference.putFile(file);
                               var dd = await reference.getDownloadURL();
                               print(dd);
                               var chatPath = FirebaseFirestore.instance
-                                  .collection("chat")
-                                  .doc(userDetails.uid.toString() +
-                                      chatUserDetails.uid.toString())
-                                  .collection(userDetails.uid.toString() +
-                                      chatUserDetails.uid.toString())
+                                  .collection("groups")
+                                  .doc(chatUserDetails.groupInfo[0].type=="Activity"?"Activity":"Academic")
+                                  .collection(chatUserDetails.groupInfo[0].friendName)
                                   .doc();
-                              chatPath.set({
+                              await chatPath.set({
                                 "my_name": userDetails.name.value.toString(),
                                 "friend_name":
-                                    chatUserDetails.name.value.toString(),
+                                chatUserDetails.groupInfo[0].friendName.toString(),
+                                "group_image":chatUserDetails.groupInfo[0].groupImage,
+                                "group_type":chatUserDetails.groupInfo[0].type,
                                 "friend_uid":
-                                    chatUserDetails.uid.value.toString(),
+                                chatUserDetails.groupInfo[0].friendName.toString(),
                                 "is_image": false,
                                 "message": result.names[0],
                                 "is_document": true,
                                 "document": dd,
                                 "msg_owner": userDetails.name.value.toString(),
+                                "description":chatUserDetails.groupInfo[0].desc,
                                 "image": null,
                                 "uid": userDetails.uid.value.toString(),
                                 "seen": false,
                                 "timestamp":
-                                    DateTime.now().millisecondsSinceEpoch,
+                                DateTime.now().millisecondsSinceEpoch,
                               });
                             }
                           },
@@ -398,50 +465,52 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                             filled: true,
                             suffixIcon: IconButton(
                               onPressed: () async {
-                                var friend = await FirebaseFirestore.instance
-                                    .collection("users")
-                                    .doc(chatUserDetails.uid.toString())
-                                    .update({
-                                  "is_chat":true,
-                                  "user_chat_link": FieldValue.arrayUnion([
-                                    userDetails.uid.toString() +
-                                        chatUserDetails.uid.toString()
-                                  ])
-                                });
-                                var me = await FirebaseFirestore.instance
+                                chatUserDetails.groupInfo[0].type=="Activity"?
+                                 await FirebaseFirestore.instance
                                     .collection("users")
                                     .doc(userDetails.uid.toString())
                                     .update({
-                                  "is_chat":true,
-                                  "user_chat_link": FieldValue.arrayUnion([
-                                    userDetails.uid.toString() +
-                                        chatUserDetails.uid.toString()
-                                  ])
+                                   "is_activity":true,
+                                  "activity_group_link":
+                                  FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                                }): await FirebaseFirestore.instance
+                                    .collection("users")
+                                    .doc(userDetails.uid.toString())
+                                    .update({
+                                  "is_academic":true,
+                                  "Academic_group_link":
+                                  FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                                });
+                                chatUserDetails.groupInfo[0].type=="Activity"?await FirebaseFirestore.instance.collection("group_list").doc("activity").update({
+                                  "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                                }):await FirebaseFirestore.instance.collection("group_list").doc("Academic").update({
+                                  "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
                                 });
                                 var chatPath = FirebaseFirestore.instance
-                                    .collection("chat")
-                                    .doc(userDetails.uid.toString() +
-                                        chatUserDetails.uid.toString())
-                                    .collection(userDetails.uid.toString() +
-                                        chatUserDetails.uid.toString())
+                                    .collection("groups")
+                                    .doc( chatUserDetails.groupInfo[0].type=="Activity"?"Activity":"Academic")
+                                    .collection(chatUserDetails.groupInfo[0].friendName)
                                     .doc();
                                 chatPath.set({
                                   "my_name": userDetails.name.value.toString(),
                                   "friend_name":
-                                      chatUserDetails.name.value.toString(),
+                                  chatUserDetails.groupInfo[0].friendName.toString(),
+                                  "group_type":chatUserDetails.groupInfo[0].type,
                                   "friend_uid":
-                                      chatUserDetails.uid.value.toString(),
+                                  chatUserDetails.groupInfo[0].friendName.toString(),
                                   "is_image": false,
                                   "message": message.text.trim(),
                                   "is_document": false,
+                                  "group_image":chatUserDetails.groupInfo[0].groupImage,
                                   "document": null,
+                                  "description":chatUserDetails.groupInfo[0].desc,
                                   "msg_owner":
-                                      userDetails.name.value.toString(),
+                                  userDetails.name.value.toString(),
                                   "image": null,
                                   "uid": userDetails.uid.value.toString(),
                                   "seen": false,
                                   "timestamp":
-                                      DateTime.now().millisecondsSinceEpoch,
+                                  DateTime.now().millisecondsSinceEpoch,
                                 });
                                 message.clear();
                               },
