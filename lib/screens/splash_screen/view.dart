@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset("assets/logo/logo.png", scale: 1.5,),
-            Text("Chat App", textAlign: TextAlign.center,
+            Text("UTAS-A-SC", textAlign: TextAlign.center,
                 style: GoogleFonts.lato(textStyle: TextStyle(
                     fontSize: width * 0.13, fontWeight: FontWeight.bold),)),
             SizedBox(height: width * 0.02,),

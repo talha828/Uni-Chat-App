@@ -30,6 +30,7 @@ class GroupMessage{
   String timestamp;
   Blob? image;
   String msgOwner;
+  String groupType;
   bool seen;
-  GroupMessage({required this.groupImage,required this.desc,required this.type,required this.myName,required this.friendName,required this.msgOwner,required this.image,required this.myUid,required this.timestamp,required this.seen,this.message,this.document,required this.friendUid,required this.isDocument,required this.isImage});
+  GroupMessage({ required this.groupType,required this.groupImage,required this.desc,required this.type,required this.myName,required this.friendName,required this.msgOwner,required this.image,required this.myUid,required this.timestamp,required this.seen,this.message,this.document,required this.friendUid,required this.isDocument,required this.isImage});
 }

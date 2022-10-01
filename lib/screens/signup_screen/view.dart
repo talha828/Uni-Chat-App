@@ -91,16 +91,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           setLoading(true);
                           if (_formKey.currentState!.validate()) {
                             if (password.text == confirmPassword.text) {
-                              await Database.signUp(
-                                name.text,
-                                email.text,
-                                password.text.toString(),
-                                specialization.text,
-                              ).then(
-                                (value) {
-                                  setLoading(false);
-                                },
-                              );
+                             if(RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email.text)) {
+                                await Database.signUp(
+                                  name.text,
+                                  email.text,
+                                  password.text.toString(),
+                                  specialization.text,
+                                ).then(
+                                  (value) {
+                                    setLoading(false);
+                                  },
+                                );
+                              }else{
+                               Fluttertoast.showToast(msg: "Please check your email");
+                             }
                             } else {
                               Fluttertoast.showToast(
                                       msg: "Your Password not match")

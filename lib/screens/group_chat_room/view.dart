@@ -14,6 +14,7 @@ import 'package:uni_chat_app/model/Group_chat_model.dart';
 import 'package:uni_chat_app/model/chat_message_model.dart';
 import 'package:uni_chat_app/model/user_model.dart';
 import 'package:uni_chat_app/screens/chat_details_screen/view.dart';
+import 'package:uni_chat_app/screens/group_details_screen/view.dart';
 import 'package:uni_chat_app/screens/main_screen/view.dart';
 import 'package:uni_chat_app/widgets/chat_progress_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -57,13 +58,13 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
           ),
           title: ListTile(
             onTap: ()async{
-              Get.to(ChatDetailsScreen());
+              Get.to(GroupDetailsScreen());
             },
             leading: Container(
               width: width * 0.13,
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(width),
-                  child: Image.memory(chatUserDetails.groupInfo[0].groupImage!.bytes)),
+                  child: Image.memory(chatUserDetails.groupInfo[0].groupImage.bytes)),
             ),
             title: Text(
               chatUserDetails.groupInfo[0].friendName.toString(),
@@ -117,6 +118,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                           (doc) => GroupMessage(
                         groupImage: doc["group_image"],
                         desc:doc["description"] ,
+                        groupType: doc["group_class"],
                         type: doc["group_type"],
                         myName: doc['my_name'],
                         friendName: doc["friend_name"],
@@ -316,6 +318,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                                 "group_type":chatUserDetails.groupInfo[0].type,
                                 "is_image": true,
                                 "description":chatUserDetails.groupInfo[0].desc,
+                                "group_class" :chatUserDetails.groupInfo[0].groupType,
                                 "message": "picture",
                                 "group_image":chatUserDetails.groupInfo[0].groupImage,
                                 "is_document": false,
@@ -375,6 +378,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                                 "group_image":chatUserDetails.groupInfo[0].groupImage,
                                 "is_image": true,
                                 "message": "picture",
+                                "group_class" :chatUserDetails.groupInfo[0].groupType,
                                 "is_document": false,
                                 "document": null,
                                 "msg_owner": userDetails.name.value.toString(),
@@ -442,6 +446,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                                 "is_image": false,
                                 "message": result.names[0],
                                 "is_document": true,
+                                "group_class" :chatUserDetails.groupInfo[0].groupType,
                                 "document": dd,
                                 "msg_owner": userDetails.name.value.toString(),
                                 "description":chatUserDetails.groupInfo[0].desc,
@@ -507,6 +512,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                                   "msg_owner":
                                   userDetails.name.value.toString(),
                                   "image": null,
+                                  "group_class" :chatUserDetails.groupInfo[0].groupType,
                                   "uid": userDetails.uid.value.toString(),
                                   "seen": false,
                                   "timestamp":

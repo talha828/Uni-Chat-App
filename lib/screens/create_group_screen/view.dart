@@ -15,6 +15,7 @@ import 'package:uni_chat_app/widgets/chat_button.dart';
 
 import '../../widgets/chat_text_field.dart';
 enum GroupType{academic ,activity}
+enum GroupClass{private,public}
 class CreateGroupScreen extends StatefulWidget {
   const CreateGroupScreen({Key? key}) : super(key: key);
 
@@ -29,6 +30,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
   final _formKey = GlobalKey<FormState>();
   final groupDetails = Get.put(GroupChatModel());
   GroupType value=GroupType.activity;
+  GroupClass value1=GroupClass.public;
   final ImagePicker _picker = ImagePicker();
   File? image;
   @override
@@ -47,156 +49,199 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
             style: TextStyle(color: themeColor1),
           ),
         ),
-        body: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Container(
-              height: height,
-              padding: EdgeInsets.symmetric(horizontal: width * 0.07),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  InkWell(
-                    onTap: () async {
-                       result =
-                          await FilePicker.platform.pickFiles(
-                        type: FileType.custom,
-                        allowedExtensions: ['png', 'jpg', "jpeg"],
-                      );
-                      image = File(result!.files.single.path!);
-                      setState(() {});
-                    },
-                    child: image == null
-                        ? CircleAvatar(
-                            radius: width * 0.19,
-                            backgroundColor: themeColor1.withOpacity(0.7),
-                            child: Icon(
-                              Icons.add_a_photo_outlined,
-                              size: width * 0.18,
-                              color: Colors.white,
-                            ),
-                          )
-                        : CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            radius: width * 0.2,
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(width),
-                                child: Image.file(
-                                  image!,
-                                  width: width * 0.4,
-                                  fit: BoxFit.fill,
-                                  height: width * 0.4,
-                                )),
-                          ),
-                  ),
-                  LoginTextField(
-                    controller: group,
-                    obscureText: false,
-                    width: width,
-                    hintText: "Group Name",
-                  ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: width * 0.04,
-                  ),
-                  Text(
-                    "Group Type",
-                    style: TextStyle(
-                        fontSize: width * 0.05,
-                        fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  SizedBox(
-                    height: width * 0.04,
-                  ),
-                  ListTile(
-                  title: const Text('Academic'),
-          leading: Radio(
-            value: GroupType.academic,
-            groupValue: value,
-            onChanged: (GroupType? check) {
-                  setState(() {
-                    value=check!;
-                    print(check);
-
-                  });
-            },
-          ),
-        ),
-                  ListTile(
-                    title: const Text('Activity'),
-                    leading: Radio(
-                      value: GroupType.activity,
-                      groupValue: value,
-                      onChanged: (GroupType? check) {
-                        setState(() {
-                          value=check!;
-                          print(check);
-                        });
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Container(
+                height: height,
+                padding: EdgeInsets.symmetric(horizontal: width * 0.07),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    InkWell(
+                      onTap: () async {
+                         result =
+                            await FilePicker.platform.pickFiles(
+                          type: FileType.custom,
+                          allowedExtensions: ['png', 'jpg', "jpeg"],
+                        );
+                        image = File(result!.files.single.path!);
+                        setState(() {});
                       },
+                      child: image == null
+                          ? CircleAvatar(
+                              radius: width * 0.19,
+                              backgroundColor: themeColor1.withOpacity(0.7),
+                              child: Icon(
+                                Icons.add_a_photo_outlined,
+                                size: width * 0.18,
+                                color: Colors.white,
+                              ),
+                            )
+                          : CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              radius: width * 0.2,
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(width),
+                                  child: Image.file(
+                                    image!,
+                                    width: width * 0.4,
+                                    fit: BoxFit.fill,
+                                    height: width * 0.4,
+                                  )),
+                            ),
                     ),
-                  ),
-                ],
-              ),
-                  Container(
-                    child: Column(
+                    LoginTextField(
+                      controller: group,
+                      obscureText: false,
+                      width: width,
+                      hintText: "Group Name",
+                    ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: width * 0.04,
+                    ),
+                    Text(
+                      "Group Type",
+                      style: TextStyle(
+                          fontSize: width * 0.05,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    SizedBox(
+                      height: width * 0.04,
+                    ),
+                    ListTile(
+                    title: const Text('Academic'),
+            leading: Radio(
+              value: GroupType.academic,
+              groupValue: value,
+              onChanged: (GroupType? check) {
+                    setState(() {
+                      value=check!;
+                      print(check);
+
+                    });
+              },
+            ),
+          ),
+                    ListTile(
+                      title: const Text('Activity'),
+                      leading: Radio(
+                        value: GroupType.activity,
+                        groupValue: value,
+                        onChanged: (GroupType? check) {
+                          setState(() {
+                            value=check!;
+                            print(check);
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        SizedBox(
+                          height: width * 0.04,
+                        ),
                         Text(
-                          "Description",
+                          "Group Class",
                           style: TextStyle(
                               fontSize: width * 0.05,
-                              fontWeight: FontWeight.bold),
+                              fontWeight: FontWeight.bold
+                          ),
                         ),
                         SizedBox(
                           height: width * 0.04,
                         ),
-                        TextFormField(
-                          maxLines: 10,
-                          obscureText: false,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your Description';
-                            }
-                            return null;
-                          },
-                          controller: description,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.grey.shade300,
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: width * 0.04,
-                                vertical: width * 0.04),
-                            border: InputBorder.none,
-                            hintText: "Type description here ........",
+                        ListTile(
+                          title: const Text('Private'),
+                          leading: Radio(
+                            value: GroupClass.private,
+                            groupValue: value1,
+                            onChanged: (GroupClass? check) {
+                              setState(() {
+                                value1=check!;
+                              });
+                            },
+                          ),
+                        ),
+                        ListTile(
+                          title: const Text('Public'),
+                          leading: Radio(
+                            value: GroupClass.public,
+                            groupValue: value1,
+                            onChanged: (GroupClass? check) {
+                              setState(() {
+                                value1=check!;
+                              });
+                            },
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  ChatButton(
-                      width: width,
-                      name: "Create Now",
-                      onTap: () async {
-                        if (_formKey.currentState!.validate()) {
-                          if(image != null){
-                            FirebaseAuth _auth=FirebaseAuth.instance;
-                            groupDetails.groupInfo.clear();
-                              groupDetails.groupInfo.add(
-                                GroupMessage(groupImage:  Blob(await image!.readAsBytes()), desc: description.text, type: value==GroupType.activity?"Activity" :"Academic", myName: "", friendName: group.text.trim(), msgOwner: "", image: Blob(await image!.readAsBytes()), myUid: "", timestamp: "", seen: false, friendUid: "", isDocument: false, isImage: false)
-                                //GroupChatsModel(name: group.text, desc: description.text, link:_auth.currentUser!.uid+group.text.replaceAll(" ", "_"),groupType: value==GroupType.activity?"Activity" :"Academic" , image: Blob(await image!.readAsBytes()))
-                              );
-                              
-                              Get.to(GroupChatRoomScreen());
-                          }else{
-                            Fluttertoast.showToast(msg:"Image is required");
+                    Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Description",
+                            style: TextStyle(
+                                fontSize: width * 0.05,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            height: width * 0.04,
+                          ),
+                          TextFormField(
+                            maxLines: 3,
+                            obscureText: false,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your Description';
+                              }
+                              return null;
+                            },
+                            controller: description,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.grey.shade300,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: width * 0.04,
+                                  vertical: width * 0.04),
+                              border: InputBorder.none,
+                              hintText: "Type description here ........",
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ChatButton(
+                        width: width,
+                        name: "Create Now",
+                        onTap: () async {
+                          if (_formKey.currentState!.validate()) {
+                            if(image != null){
+                              FirebaseAuth _auth=FirebaseAuth.instance;
+                              groupDetails.groupInfo.clear();
+                                groupDetails.groupInfo.add(
+                                  GroupMessage(groupType: value1.toString(), groupImage:  Blob(await image!.readAsBytes()), desc: description.text, type: value==GroupType.activity?"Activity" :"Academic", myName: "", friendName: group.text.trim(), msgOwner: "", image: Blob(await image!.readAsBytes()), myUid: "", timestamp: "", seen: false, friendUid: "", isDocument: false, isImage: false)
+                                  //GroupChatsModel(name: group.text, desc: description.text, link:_auth.currentUser!.uid+group.text.replaceAll(" ", "_"),groupType: value==GroupType.activity?"Activity" :"Academic" , image: Blob(await image!.readAsBytes()))
+                                );
+                                Get.to(GroupChatRoomScreen());
+                            }else{
+                              Fluttertoast.showToast(msg:"Image is required");
+                            }
                           }
-                        }
-                      })
-                ],
+                        })
+                  ],
+                ),
               ),
             ),
           ),

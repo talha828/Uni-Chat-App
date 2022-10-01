@@ -130,7 +130,6 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen>
                     chatUserDetails.uid.toString())
                     .collection(userDetails.uid.toString() +
                     chatUserDetails.uid.toString()).where("is_image",isEqualTo: true)
-                    .orderBy("timestamp",descending: true)
                     .snapshots(),
                         builder: (context,AsyncSnapshot<QuerySnapshot> snapshot) {
                           List<ChatMessage> msg = snapshot.data!.docs
@@ -187,7 +186,6 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen>
                             chatUserDetails.uid.toString())
                             .collection(userDetails.uid.toString() +
                             chatUserDetails.uid.toString()).where("is_document",isEqualTo: true)
-                            .orderBy("timestamp",descending: true)
                             .snapshots(),
                         builder: (context,AsyncSnapshot<QuerySnapshot> snapshot) {
                           if(snapshot.data!.docs.length <1){
