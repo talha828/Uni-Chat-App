@@ -292,7 +292,7 @@ class _ChatScreenState extends State<ChatScreen>
                                               int.parse(msg[0].timestamp)),
                                           onTap: () async {
                                             groupDetails.groupInfo.clear();
-                                            groupDetails.groupInfo.add(msg[index]);
+                                            groupDetails.groupInfo.add(msg[0]);
                                             Get.to(GroupChatRoomScreen());
                                           });
                                     }
@@ -348,7 +348,7 @@ class _ChatScreenState extends State<ChatScreen>
                                           int.parse(msg[0].timestamp)),
                                       onTap: () async {
                                         groupDetails.groupInfo.clear();
-                                        groupDetails.groupInfo.add(msg[index]);
+                                        groupDetails.groupInfo.add(msg[0]);
                                         Get.to(GroupChatRoomScreen());
                                       },
                                     );

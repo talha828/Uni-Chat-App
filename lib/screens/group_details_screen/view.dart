@@ -198,7 +198,7 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen>
                     Container(
                       child: StreamBuilder(
                           stream:FirebaseFirestore.instance
-                              .collection("chat")
+                              .collection("groups")
                               .doc(chatUserDetails.groupInfo[0].type=="Activity"?"Activity":"Academic")
                               .collection(chatUserDetails.groupInfo[0].friendName).where("is_document",isEqualTo: true)
                               .snapshots(),

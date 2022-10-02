@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_chat_app/screens/signup_screen/view.dart';
 import 'package:uni_chat_app/widgets/chat_button.dart';
 import 'package:uni_chat_app/widgets/chat_create_account.dart';
@@ -19,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController password = TextEditingController();
   final _formKey=GlobalKey<FormState>();
   bool isLoading = false;
-  bool? value = true;
+  bool value = true;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +69,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         onTap: ()async {
                           setLoading(true);
                           if(_formKey.currentState!.validate()){
-                            await Database.login(email.text, password.text.toString()).then((value) => setLoading(false)).catchError((e){
+                            await Database.login(email.text, password.text.toString()).then((value)async {
+                              final prefs = await SharedPreferences.getInstance();
+                              prefs.setString("email", value?email.text.trim():"null");
+                              prefs.setString("password", value?password.text.trim():"null");
+                              setLoading(false);}).catchError((e){
                               setLoading(false);
                               Fluttertoast.showToast(msg: "something went wrong");
                             });
@@ -103,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   value: value,
                   onChanged: (val) {
                     setState(() {
-                      value = val;
+                      value = val!;
                     });
                   }),
               Text(

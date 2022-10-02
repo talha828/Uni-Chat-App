@@ -54,12 +54,14 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
             key: _formKey,
             child: SingleChildScrollView(
               child: Container(
-                height: height,
                 padding: EdgeInsets.symmetric(horizontal: width * 0.07),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    SizedBox(
+                      height: width * 0.04,
+                    ),
                     InkWell(
                       onTap: () async {
                          result =
@@ -221,6 +223,9 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                           ),
                         ],
                       ),
+                    ),
+                    SizedBox(
+                      height: width * 0.04,
                     ),
                     ChatButton(
                         width: width,
