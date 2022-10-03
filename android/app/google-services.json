@@ -12,25 +12,15 @@
           "package_name": "com.example.uni_chat_app"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "931106272278-l5g98teat8one4339g8f7alio6prg3vv.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCU3CJENHXyutNWW5I8Og4J6AgSPTxU5NQ"
+          "current_key": "AIzaSyDf5aYPzvHQ-hIjanhguoqN1r-fjxs4qOE"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "931106272278-l5g98teat8one4339g8f7alio6prg3vv.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

@@ -54,7 +54,10 @@ class Database{
             }
           }}
         Get.to(const MainScreen());});
-    }).catchError((e){Fluttertoast .showToast(msg: "something went wrong");});
+    }).catchError((e){
+      print(e.toString());
+      Fluttertoast .showToast(msg: "something went wrong");
+    });
     return true;
   }
   static Future<bool>login(String email,String password,)async{
