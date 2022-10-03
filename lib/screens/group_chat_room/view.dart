@@ -342,8 +342,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                                 .update({
                               "is_activity":true,
                               "activity_group_link":
-                              (
-                                  chatUserDetails.groupInfo[0].friendName)
+                              FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
                             }): await FirebaseFirestore.instance
                                 .collection("users")
                                 .doc(userDetails.uid.toString())
@@ -400,8 +399,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                                 .update({
                               "is_activity":true,
                               "activity_group_link":
-                              (
-                                  chatUserDetails.groupInfo[0].friendName)
+                              FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
                             }): await FirebaseFirestore.instance
                                 .collection("users")
                                 .doc(userDetails.uid.toString())
