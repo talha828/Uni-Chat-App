@@ -299,11 +299,6 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                                 "Academic_group_link":
                                 FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
                               });
-                               chatUserDetails.groupInfo[0].type=="Activity"?await FirebaseFirestore.instance.collection("group_list").doc("activity").update({
-                                "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
-                              }):await FirebaseFirestore.instance.collection("group_list").doc("Academic").update({
-                                 "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
-                               });
                               var chatPath = FirebaseFirestore.instance
                                   .collection("groups")
                                   .doc(chatUserDetails.groupInfo[0].type=="Activity"?"Activity":"Academic")
@@ -331,6 +326,19 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                                 DateTime.now().millisecondsSinceEpoch,
                               });
                             });
+                            chatUserDetails.groupInfo[0].type=="Activity"?await FirebaseFirestore.instance.collection("group_list").doc("activity").update({
+                              "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                            }).catchError(()async{
+                              await FirebaseFirestore.instance.collection("group_list").doc("activity").set({
+                                "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                              });
+                            }):await FirebaseFirestore.instance.collection("group_list").doc("Academic").update({
+                              "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                            }).catchError((e)async{
+                              await FirebaseFirestore.instance.collection("group_list").doc("Academic").update({
+                                "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                              });
+                            });
                           },
                           icon: Icon(Icons.camera_alt_outlined)),
                       IconButton(
@@ -350,11 +358,6 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                               "is_academic":true,
                               "Academic_group_link":
                               FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
-                            });
-                            chatUserDetails.groupInfo[0].type=="Activity"?await FirebaseFirestore.instance.collection("group_list").doc("activity").update({
-                              "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
-                            }):await FirebaseFirestore.instance.collection("group_list").doc("Academic").update({
-                              "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
                             });
                             final XFile? photo = await _picker
                                 .pickImage(
@@ -388,6 +391,19 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                                 DateTime.now().millisecondsSinceEpoch,
                               });
                             });
+                            chatUserDetails.groupInfo[0].type=="Activity"?await FirebaseFirestore.instance.collection("group_list").doc("activity").update({
+                              "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                            }).catchError(()async{
+                              await FirebaseFirestore.instance.collection("group_list").doc("activity").set({
+                                "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                              });
+                            }):await FirebaseFirestore.instance.collection("group_list").doc("Academic").update({
+                              "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                            }).catchError((e)async{
+                              await FirebaseFirestore.instance.collection("group_list").doc("Academic").update({
+                                "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                              });
+                            });
                           },
                           icon: Icon(Icons.image)),
                       IconButton(
@@ -407,11 +423,6 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                               "is_academic":true,
                               "Academic_group_link":
                               FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
-                            });
-                            chatUserDetails.groupInfo[0].type=="Activity"?await FirebaseFirestore.instance.collection("group_list").doc("activity").update({
-                              "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
-                            }):await FirebaseFirestore.instance.collection("group_list").doc("Academic").update({
-                              "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
                             });
                             FilePickerResult? result =
                             await FilePicker.platform.pickFiles(
@@ -455,6 +466,19 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                                 DateTime.now().millisecondsSinceEpoch,
                               });
                             }
+                            chatUserDetails.groupInfo[0].type=="Activity"?await FirebaseFirestore.instance.collection("group_list").doc("activity").update({
+                              "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                            }).catchError(()async{
+                              await FirebaseFirestore.instance.collection("group_list").doc("activity").set({
+                                "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                              });
+                            }):await FirebaseFirestore.instance.collection("group_list").doc("Academic").update({
+                              "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                            }).catchError((e)async{
+                              await FirebaseFirestore.instance.collection("group_list").doc("Academic").update({
+                                "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                              });
+                            });
                           },
                           icon: Icon(Icons.file_open_rounded)),
                       Container(
@@ -484,11 +508,6 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                                   "Academic_group_link":
                                   FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
                                 });
-                                chatUserDetails.groupInfo[0].type=="Activity"?await FirebaseFirestore.instance.collection("group_list").doc("activity").update({
-                                  "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
-                                }):await FirebaseFirestore.instance.collection("group_list").doc("Academic").update({
-                                  "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
-                                });
                                 var chatPath = FirebaseFirestore.instance
                                     .collection("groups")
                                     .doc( chatUserDetails.groupInfo[0].type=="Activity"?"Activity":"Academic")
@@ -517,6 +536,19 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                                   DateTime.now().millisecondsSinceEpoch,
                                 });
                                 message.clear();
+                                chatUserDetails.groupInfo[0].type=="Activity"?await FirebaseFirestore.instance.collection("group_list").doc("activity").update({
+                                  "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                                }).catchError(()async{
+                                   await FirebaseFirestore.instance.collection("group_list").doc("activity").set({
+                                    "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                                  });
+                                }):await FirebaseFirestore.instance.collection("group_list").doc("Academic").update({
+                                  "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                                }).catchError((e)async{
+                                  await FirebaseFirestore.instance.collection("group_list").doc("Academic").update({
+                                    "group_list":FieldValue.arrayUnion([chatUserDetails.groupInfo[0].friendName])
+                                  });
+                                });
                               },
                               icon: Icon(Icons.send,
                                   size: width * 0.06, color: themeColor1),
