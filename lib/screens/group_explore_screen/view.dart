@@ -120,91 +120,93 @@ class _GroupExploreScreenState extends State<GroupExploreScreen> with SingleTick
                               return CircularProgressIndicator();
                             if(snapshot.hasError)
                               return Text("No records founds");
-                            return ListView.builder(
-                              shrinkWrap: true,
-                             itemCount: snapshot.data!.length,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  child: StreamBuilder(
-                                    stream: FirebaseFirestore.instance
-                                        .collection("groups").doc("Academic").collection(snapshot.data![index]).orderBy("timestamp",descending: true).limit(1)
-                                        .snapshots(),
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot<QuerySnapshot> snapshot) {
-                                      if (snapshot.hasError) // TODO: show alert
-                                        return Center(child: Text('Something went wrong'));
+                            return Expanded(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                               itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) {
+                                  return Container(
+                                    child: StreamBuilder(
+                                      stream: FirebaseFirestore.instance
+                                          .collection("groups").doc("Academic").collection(snapshot.data![index]).orderBy("timestamp",descending: true).limit(1)
+                                          .snapshots(),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                                        if (snapshot.hasError) // TODO: show alert
+                                          return Center(child: Text('Something went wrong'));
 
-                                      if (snapshot.connectionState == ConnectionState.waiting)
-                                        return Column(
-                                          children: [Center(child: ChatProgressIndicator())],
+                                        if (snapshot.connectionState == ConnectionState.waiting)
+                                          return Column(
+                                            children: [Center(child: ChatProgressIndicator())],
+                                          );
+
+                                        var len = snapshot.data!.docs.length;
+                                        if (len == 0)
+                                          return Column(
+                                            children: [
+                                              SizedBox(height: 100),
+                                              Center(
+                                                child: Text("No shops available",
+                                                    style: TextStyle(
+                                                        fontSize: 20, color: Colors.grey)),
+                                              )
+                                            ],
+                                          );
+
+                                        List<GroupMessage> shops = snapshot.data!.docs
+                                            .map(
+                                              (doc) => GroupMessage(
+                                            groupImage: doc["group_image"],
+                                            desc:doc["description"] ,
+                                            type: doc["group_type"],
+                                            myName: doc['my_name'],
+                                            friendName: doc["friend_name"],
+                                            groupType: doc["group_class"],
+                                            msgOwner: doc['msg_owner'],
+                                            myUid: doc['uid'],
+                                            seen: doc['seen'],
+                                            image: doc["image"],
+                                            timestamp: doc["timestamp"].toString(),
+                                            friendUid: doc['friend_uid'],
+                                            isDocument: doc['is_document'],
+                                            document: doc['document'],
+                                            isImage: doc['is_image'],
+                                            message: doc['message'],
+                                          ),
+                                        )
+                                            .toList();
+
+                                        return Expanded(
+                                          child: ListView.builder(
+                                              padding: EdgeInsets.symmetric(vertical: 15),
+                                              scrollDirection: Axis.vertical,
+                                              shrinkWrap: true,
+                                              itemCount: shops.length,
+                                              itemBuilder: (context, index){
+                                                return ListTile(
+                                                  onTap: ()async{
+                                                    groupDetails.groupInfo.clear();
+                                                    groupDetails.groupInfo.add(shops[index]);
+                                                    Get.to(GroupChatRoomScreen());
+                                                  },
+                                                  leading: CircleAvatar(
+                                                    backgroundColor: themeColor1,
+                                                    child: ClipRRect(
+                                                        borderRadius: BorderRadius.circular(width * 0.2),
+                                                        child: Image.memory(shops[index].groupImage.bytes))),
+                                                  title: Text(shops[index].friendName),
+                                                  subtitle: Text(shops[index].desc),
+                                                  trailing: CircleAvatar(
+                                                    backgroundColor: Colors.white,
+                                                    child: Icon(Icons.send,color: themeColor1,),),
+                                                );
+                                              }),
                                         );
-
-                                      var len = snapshot.data!.docs.length;
-                                      if (len == 0)
-                                        return Column(
-                                          children: [
-                                            SizedBox(height: 100),
-                                            Center(
-                                              child: Text("No shops available",
-                                                  style: TextStyle(
-                                                      fontSize: 20, color: Colors.grey)),
-                                            )
-                                          ],
-                                        );
-
-                                      List<GroupMessage> shops = snapshot.data!.docs
-                                          .map(
-                                            (doc) => GroupMessage(
-                                          groupImage: doc["group_image"],
-                                          desc:doc["description"] ,
-                                          type: doc["group_type"],
-                                          myName: doc['my_name'],
-                                          friendName: doc["friend_name"],
-                                          groupType: doc["group_class"],
-                                          msgOwner: doc['msg_owner'],
-                                          myUid: doc['uid'],
-                                          seen: doc['seen'],
-                                          image: doc["image"],
-                                          timestamp: doc["timestamp"].toString(),
-                                          friendUid: doc['friend_uid'],
-                                          isDocument: doc['is_document'],
-                                          document: doc['document'],
-                                          isImage: doc['is_image'],
-                                          message: doc['message'],
-                                        ),
-                                      )
-                                          .toList();
-
-                                      return Expanded(
-                                        child: ListView.builder(
-                                            padding: EdgeInsets.symmetric(vertical: 15),
-                                            scrollDirection: Axis.vertical,
-                                            shrinkWrap: true,
-                                            itemCount: shops.length,
-                                            itemBuilder: (context, index){
-                                              return ListTile(
-                                                onTap: ()async{
-                                                  groupDetails.groupInfo.clear();
-                                                  groupDetails.groupInfo.add(shops[index]);
-                                                  Get.to(GroupChatRoomScreen());
-                                                },
-                                                leading: CircleAvatar(
-                                                  backgroundColor: themeColor1,
-                                                  child: ClipRRect(
-                                                      borderRadius: BorderRadius.circular(width * 0.2),
-                                                      child: Image.memory(shops[index].groupImage.bytes))),
-                                                title: Text(shops[index].friendName),
-                                                subtitle: Text(shops[index].desc),
-                                                trailing: CircleAvatar(
-                                                  backgroundColor: Colors.white,
-                                                  child: Icon(Icons.send,color: themeColor1,),),
-                                              );
-                                            }),
-                                      );
-                                    },
-                                  ),
-                                );
-                              }
+                                      },
+                                    ),
+                                  );
+                                }
+                              ),
                             );
                           }
                         )
@@ -241,89 +243,93 @@ class _GroupExploreScreenState extends State<GroupExploreScreen> with SingleTick
                                 return CircularProgressIndicator();
                               if(snapshot.hasError)
                                 return Text("No records sre found");
-                              return ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: snapshot.data!.length,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      child: StreamBuilder(
-                                        stream: FirebaseFirestore.instance
-                                            .collection("groups").doc("Activity").collection(snapshot.data![index]).orderBy("timestamp",descending: true).limit(1)
-                                            .snapshots(),
-                                        builder: (BuildContext context,
-                                            AsyncSnapshot<QuerySnapshot> snapshot) {
-                                          if (snapshot.hasError) // TODO: show alert
-                                            return Text('Something went wrong');
+                              return Expanded(
+                                child: ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: snapshot.data!.length,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        child: StreamBuilder(
+                                          stream: FirebaseFirestore.instance
+                                              .collection("groups").doc("Activity").collection(snapshot.data![index]).orderBy("timestamp",descending: true).limit(1)
+                                              .snapshots(),
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot<QuerySnapshot> snapshot) {
+                                            if (snapshot.hasError) // TODO: show alert
+                                              return Text('Something went wrong');
 
-                                          if (snapshot.connectionState == ConnectionState.waiting)
-                                            return Column(
-                                              children: [Center(child: ChatProgressIndicator())],
+                                            if (snapshot.connectionState == ConnectionState.waiting)
+                                              return Column(
+                                                children: [Center(child: ChatProgressIndicator())],
+                                              );
+
+                                            var len = snapshot.data!.docs.length;
+                                            if (len == 0)
+                                              return Column(
+                                                children: [
+                                                  SizedBox(height: 100),
+                                                  Center(
+                                                    child: Text("No shops available",
+                                                        style: TextStyle(
+                                                            fontSize: 20, color: Colors.grey)),
+                                                  )
+                                                ],
+                                              );
+
+                                            List<GroupMessage> shops = snapshot.data!.docs
+                                                .map(
+                                                  (doc) => GroupMessage(
+                                                groupImage: doc["group_image"],
+                                                desc:doc["description"] ,
+                                                type: doc["group_type"],
+                                                myName: doc['my_name'],
+                                                friendName: doc["friend_name"],
+                                                msgOwner: doc['msg_owner'],
+                                                groupType: doc["group_class"],
+                                                myUid: doc['uid'],
+                                                seen: doc['seen'],
+                                                image: doc["image"],
+                                                timestamp: doc["timestamp"].toString(),
+                                                friendUid: doc['friend_uid'],
+                                                isDocument: doc['is_document'],
+                                                document: doc['document'],
+                                                isImage: doc['is_image'],
+                                                message: doc['message'],
+                                              ),
+                                            )
+                                                .toList();
+
+                                            return Expanded(
+                                              child: ListView.builder(
+                                                physics: NeverScrollableScrollPhysics(),
+                                                  padding: EdgeInsets.symmetric(vertical: 15),
+                                                  scrollDirection: Axis.vertical,
+                                                  shrinkWrap: true,
+                                                  itemCount: shops.length,
+                                                  itemBuilder: (context, index){
+                                                    return ListTile(
+                                                      onTap: (){
+                                                        Get.to(GroupChatRoomScreen());
+                                                      },
+                                                      leading: CircleAvatar(
+                                                          backgroundColor: themeColor1,
+                                                          child: ClipRRect(
+                                                              borderRadius: BorderRadius.circular(width * 0.2),
+                                                              child: Image.memory(shops[index].groupImage.bytes))),
+                                                      title: Text(shops[index].friendName),
+                                                      subtitle: Text(shops[index].desc),
+                                                      trailing: CircleAvatar(
+                                                        backgroundColor: Colors.white,
+                                                        child: Icon(Icons.send,color: themeColor1,),),
+                                                    );
+                                                  }),
                                             );
-
-                                          var len = snapshot.data!.docs.length;
-                                          if (len == 0)
-                                            return Column(
-                                              children: [
-                                                SizedBox(height: 100),
-                                                Center(
-                                                  child: Text("No shops available",
-                                                      style: TextStyle(
-                                                          fontSize: 20, color: Colors.grey)),
-                                                )
-                                              ],
-                                            );
-
-                                          List<GroupMessage> shops = snapshot.data!.docs
-                                              .map(
-                                                (doc) => GroupMessage(
-                                              groupImage: doc["group_image"],
-                                              desc:doc["description"] ,
-                                              type: doc["group_type"],
-                                              myName: doc['my_name'],
-                                              friendName: doc["friend_name"],
-                                              msgOwner: doc['msg_owner'],
-                                              groupType: doc["group_class"],
-                                              myUid: doc['uid'],
-                                              seen: doc['seen'],
-                                              image: doc["image"],
-                                              timestamp: doc["timestamp"].toString(),
-                                              friendUid: doc['friend_uid'],
-                                              isDocument: doc['is_document'],
-                                              document: doc['document'],
-                                              isImage: doc['is_image'],
-                                              message: doc['message'],
-                                            ),
-                                          )
-                                              .toList();
-
-                                          return Expanded(
-                                            child: ListView.builder(
-                                                padding: EdgeInsets.symmetric(vertical: 15),
-                                                scrollDirection: Axis.vertical,
-                                                shrinkWrap: true,
-                                                itemCount: shops.length,
-                                                itemBuilder: (context, index){
-                                                  return ListTile(
-                                                    onTap: (){
-                                                      Get.to(GroupChatRoomScreen());
-                                                    },
-                                                    leading: CircleAvatar(
-                                                        backgroundColor: themeColor1,
-                                                        child: ClipRRect(
-                                                            borderRadius: BorderRadius.circular(width * 0.2),
-                                                            child: Image.memory(shops[index].groupImage.bytes))),
-                                                    title: Text(shops[index].friendName),
-                                                    subtitle: Text(shops[index].desc),
-                                                    trailing: CircleAvatar(
-                                                      backgroundColor: Colors.white,
-                                                      child: Icon(Icons.send,color: themeColor1,),),
-                                                  );
-                                                }),
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  }
+                                          },
+                                        ),
+                                      );
+                                    }
+                                ),
                               );
                             }
                         )
