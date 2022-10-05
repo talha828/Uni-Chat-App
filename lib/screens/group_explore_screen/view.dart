@@ -178,6 +178,7 @@ class _GroupExploreScreenState extends State<GroupExploreScreen> with SingleTick
 
                                         return Expanded(
                                           child: ListView.builder(
+                                            physics: NeverScrollableScrollPhysics(),
                                               padding: EdgeInsets.symmetric(vertical: 15),
                                               scrollDirection: Axis.vertical,
                                               shrinkWrap: true,
@@ -245,7 +246,6 @@ class _GroupExploreScreenState extends State<GroupExploreScreen> with SingleTick
                                 return Text("No records sre found");
                               return Expanded(
                                 child: ListView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount: snapshot.data!.length,
                                     itemBuilder: (context, index) {
